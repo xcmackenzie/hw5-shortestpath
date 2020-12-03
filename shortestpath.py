@@ -2,6 +2,29 @@
 
 from pqdict import PQDict
 
+# Converts results of BellmanFord/Dijkstra into actual shortest path
+# rather than just minimum distances
+def shortestPath(graph, source, end, alg):
+    # Initialize path and current node
+    node = end
+    path = [node]
+    # Run whichever algorithm specified: 1 = BellmanFord, 2 = Dijkstra
+    try:
+        if alg == 1:
+            dis, prev = BellmanFord(graph, source)
+        if alg == 2:
+            dis, prev = Dijkstra(graph, source)
+    except AssertionError:
+        print("Algorithm failed.")
+    # Working from end node to source
+    while node != source:
+        # Check previous visited node and add to path
+        node = prev[node]
+        path.append(node)
+    # Reverse direction of path
+    path.reverse()
+    return path
+
 def BellmanFord(graph, source):
     # Initialize distance to node, previous node for each node in graph
     distance = {}
@@ -64,6 +87,9 @@ def BFTest():
             print(BellmanFord(graph, 'a'))
         except AssertionError:
             print("Negative Cycle")
+    # Print shortest path in g1 from a to e
+    # Should read a, c, d, e
+    print(shortestPath(g1, 'a', 'e', 1))
 
 def Dijkstra(graph, source):
     # Initialize distance to node, queue for tracking minimum shortest path,
@@ -138,7 +164,9 @@ def DijkstraTest():
             print(Dijkstra(graph, 'a'))
         except AssertionError:
             print("Negative Edge")
-
+    # Print shortest path in g1 from a to e
+    # Should read a, b, d, e
+    print(shortestPath(g1, 'a', 'e', 2))
 
 BFTest()
 DijkstraTest()
